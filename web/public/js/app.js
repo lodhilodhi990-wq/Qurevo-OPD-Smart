@@ -1,3 +1,22 @@
+// QUREVO Firebase Configuration (qurevo-opd-smart)
+const firebaseConfig = {
+  apiKey: "AIzaSyCXxb4FGur1BpRI7fzEAYwBPoTZW9jUfaI",
+  authDomain: "qurevo-opd-smart.firebaseapp.com",
+  projectId: "qurevo-opd-smart",
+  storageBucket: "qurevo-opd-smart.firebasestorage.app",
+  messagingSenderId: "746654346769",
+  appId: "1:746654346769:web:f8af737388ba8d4d9c4bb0",
+  measurementId: "G-WB0XT00HR1"
+};
+
+// Initialize Firebase (Compat SDK)
+let firebaseApp, firebaseAnalytics;
+if (typeof firebase !== 'undefined') {
+    firebaseApp = firebase.initializeApp(firebaseConfig);
+    firebaseAnalytics = firebase.analytics();
+    console.log("[Firebase] Successfully connected to project qurevo-opd-smart");
+}
+
 // Register PWA Service Worker for offline operation
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then(() => {
