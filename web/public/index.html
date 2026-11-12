@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPD Smart Token & Hospital Management Platform</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="top-bar">
+        <div class="logo">
+            <span class="cross">+</span> OPD Smart Token Platform
+        </div>
+        <nav class="nav-links">
+            <button onclick="showApp('reception')">Web Reception</button>
+            <button onclick="showApp('tv')">LED / TV Web Display</button>
+            <button onclick="showApp('admin')">Hospital Admin</button>
+            <button onclick="showApp('saas')">SaaS Super Admin</button>
+        </nav>
+    </header>
+
+    <main class="content-container">
+        <!-- Reception Web App -->
+        <section id="app-reception" class="app-section">
+            <h2>Reception Desk Portal</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Register Patient & Issue Token</h3>
+                    <input type="text" id="p-name" placeholder="Patient Full Name" class="input-field">
+                    <input type="text" id="p-mr" placeholder="MR / Patient ID (e.g. MR-2026-0042)" class="input-field">
+                    <input type="text" id="p-phone" placeholder="Phone Number" class="input-field">
+                    <select id="p-dept" class="input-field">
+                        <option value="dep-1">Cardiology (Dr. Ahmed - Room 2)</option>
+                        <option value="dep-2">General OPD (Dr. Fatima - Room 1)</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="handleGenerateToken()">Generate & Print Token</button>
+                </div>
+                <div class="card">
+                    <h3>Recent Issued Token</h3>
+                    <div id="token-ticket" class="ticket-box">
+                        <div class="hospital-title">CITY GENERAL HOSPITAL</div>
+                        <div class="ticket-num" id="ticket-number">T-024</div>
+                        <div class="ticket-info" id="ticket-info">Patient: Muhammad Ali | Dr. Ahmed (Room 02)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LED / TV Web Display -->
+        <section id="app-tv" class="app-section" style="display:none;">
+            <div class="tv-display-container">
+                <div class="tv-now-serving">
+                    <div class="tv-header-tag">NOW SERVING / abhi ki token</div>
+                    <div class="tv-token-large" id="tv-token">T-024</div>
+                    <div class="tv-doctor" id="tv-doctor">Doctor: Dr. Ahmed</div>
+                    <div class="tv-room" id="tv-room">ROOM NUMBER 02</div>
+                    <div class="tv-marquee" id="tv-marquee">Token T-024, Dr. Ahmed ke Room 2 mein aaiye</div>
+                </div>
+                <div class="tv-next-list">
+                    <h3>NEXT TOKENS</h3>
+                    <div class="next-item">T-025 (Room 02)</div>
+                    <div class="next-item">T-026 (Room 02)</div>
+                    <div class="next-item">T-027 (Room 02)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hospital Admin Panel -->
+        <section id="app-admin" class="app-section" style="display:none;">
+            <h2>Hospital Admin Panel</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Departments</h3>
+                    <p>Cardiology (CARD)</p>
+                    <p>General OPD (GEN)</p>
+                </div>
+                <div class="card">
+                    <h3>Active Doctors</h3>
+                    <p>Dr. Ahmed (Room 02)</p>
+                    <p>Dr. Fatima (Room 01)</p>
+                </div>
+                <div class="card">
+                    <h3>Paired Devices</h3>
+                    <p>Reception PC #1 — APPROVED</p>
+                    <p>Doctor Phone #2 — APPROVED</p>
+                    <p>Waiting Area TV — APPROVED</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SaaS Super Admin Panel -->
+        <section id="app-saas" class="app-section" style="display:none;">
+            <h2>SaaS Platform Super Admin Panel</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Register New Hospital</h3>
+                    <input type="text" id="hosp-name" placeholder="Hospital Name" class="input-field">
+                    <input type="text" id="hosp-city" placeholder="City" class="input-field">
+                    <button class="btn btn-primary" onclick="handleRegisterHospital()">Register Hospital</button>
+                </div>
+                <div class="card">
+                    <h3>Registered Hospitals & Subscriptions</h3>
+                    <ul id="hospital-list">
+                        <li>City General Hospital (Lahore) — FREE LAN PLAN</li>
+                        <li>Mayo Care Clinic (Karachi) — FREE LAN PLAN</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
