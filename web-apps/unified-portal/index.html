@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUREVO — Unified Role-Based OPD Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-container" class="auth-box">
+        <h2>QUREVO Portal Login</h2>
+        <p class="subtitle">Enter credentials to unlock your role dashboard</p>
+
+        <input type="text" id="username" placeholder="Username (e.g. reception1, drahmed, tvdisplay, admin)" class="input-field">
+        <input type="password" id="password" placeholder="Password" class="input-field">
+
+        <label>Select Role (for Demo Mode):</label>
+        <select id="role-select" class="input-field">
+            <option value="RECEPTIONIST">Receptionist</option>
+            <option value="DOCTOR">Doctor</option>
+            <option value="TV_DISPLAY">LED / TV Waiting Display</option>
+            <option value="HOSPITAL_ADMIN">Hospital Administrator</option>
+            <option value="SUPER_ADMIN">SaaS Platform Super Admin</option>
+        </select>
+
+        <button onclick="handleLogin()" class="btn btn-primary">Sign In to Dashboard</button>
+    </div>
+
+    <!-- Main Workspace (Hidden until login) -->
+    <div id="portal-workspace" style="display:none;">
+        <header class="top-bar">
+            <div class="logo"><span class="cross">+</span> QUREVO Platform</div>
+            <div class="user-badge">
+                Logged in as: <span id="user-role-label" class="role-chip">RECEPTIONIST</span>
+                <button onclick="handleLogout()" class="btn-logout">Logout</button>
+            </div>
+        </header>
+
+        <main class="content-container">
+            <!-- RECEPTION ROLE PANEL -->
+            <section id="panel-RECEPTIONIST" class="role-panel" style="display:none;">
+                <h2>Reception Desk Workspace</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Register Patient & Generate Token</h3>
+                        <input type="text" id="p-name" placeholder="Patient Name" class="input-field">
+                        <input type="text" id="p-mr" placeholder="MR Number" class="input-field">
+                        <button onclick="issueToken()" class="btn btn-primary">Generate & Print Ticket</button>
+                    </div>
+                    <div class="card ticket-box">
+                        <div class="hospital-title">CITY GENERAL HOSPITAL</div>
+                        <div class="ticket-num" id="reception-token-num">T-024</div>
+                        <div>Patient: Muhammad Ali | Dr. Ahmed (Room 02)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DOCTOR ROLE PANEL -->
+            <section id="panel-DOCTOR" class="role-panel" style="display:none;">
+                <h2>Doctor Consultation Console</h2>
+                <div class="card text-center">
+                    <div class="subtitle">CURRENT PATIENT TOKEN</div>
+                    <div class="token-display-large" id="doctor-token">T-024</div>
+                    <h3>Muhammad Ali (MR-2026-0012)</h3>
+                    <div class="btn-group">
+                        <button onclick="callNext()" class="btn btn-primary">NEXT PATIENT</button>
+                        <button onclick="alert('Token Recalled!')" class="btn btn-secondary">RECALL</button>
+                        <button onclick="alert('Token Completed!')" class="btn btn-success">COMPLETE</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TV DISPLAY ROLE PANEL -->
+            <section id="panel-TV_DISPLAY" class="role-panel" style="display:none;">
+                <div class="tv-box">
+                    <div class="tv-header">NOW SERVING / abhi ki token</div>
+                    <div class="tv-number" id="tv-token-display">T-024</div>
+                    <div class="tv-doc">Doctor: Dr. Ahmed | ROOM 02</div>
+                    <div class="tv-marquee">Token T-024, Dr. Ahmed ke Room 2 mein aaiye</div>
+                </div>
+            </section>
+
+            <!-- HOSPITAL ADMIN ROLE PANEL -->
+            <section id="panel-HOSPITAL_ADMIN" class="role-panel" style="display:none;">
+                <h2>Hospital Administration Panel</h2>
+                <div class="grid-3">
+                    <div class="card"><h3>Departments</h3><p>Cardiology (CARD)</p><p>General OPD (GEN)</p></div>
+                    <div class="card"><h3>Doctors</h3><p>Dr. Ahmed (Room 02)</p></div>
+                    <div class="card"><h3>Reports</h3><p>Today's Patients: 48</p></div>
+                </div>
+            </section>
+
+            <!-- SUPER ADMIN ROLE PANEL -->
+            <section id="panel-SUPER_ADMIN" class="role-panel" style="display:none;">
+                <h2>SaaS Platform Super Admin Panel</h2>
+                <div class="card">
+                    <h3>Registered Hospitals & Subscriptions</h3>
+                    <ul>
+                        <li>City General Hospital (Lahore) — FREE LAN PLAN</li>
+                        <li>Mayo Care Clinic (Karachi) — FREE LAN PLAN</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

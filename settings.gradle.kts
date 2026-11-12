@@ -28,6 +28,7 @@ include(":apps:reception-app")
 include(":apps:doctor-app")
 include(":apps:tv-display-app")
 include(":apps:admin-app")
+include(":apps:unified-app")
 
 // Server Manager Desktop Tool
 include(":tools:server-manager")
