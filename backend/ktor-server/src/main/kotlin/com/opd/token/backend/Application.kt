@@ -1,5 +1,6 @@
 package com.opd.token.backend
 
+import com.opd.token.backend.backup.DatabaseBackupEngine
 import com.opd.token.backend.database.DatabaseFactory
 import com.opd.token.backend.repository.TokenRepository
 import com.opd.token.backend.routes.*
@@ -33,6 +34,7 @@ fun Application.module() {
     val repository = TokenRepository(outboxRepository)
     val connectivityManager = ConnectivityManager()
     val syncEngine = SupabaseSyncEngine(outboxRepository, connectivityManager)
+    val backupEngine = DatabaseBackupEngine()
 
     install(ContentNegotiation) {
         json(Json {
@@ -53,11 +55,11 @@ fun Application.module() {
 
     routing {
         get("/") {
-            call.respondText("QUREVO Smart OPD Platform v2.0.0 is running")
+            call.respondText("QUREVO Smart OPD Platform v2.1.0 is running")
         }
         get("${ApiEndpoints.BASE_PATH}/health") {
             val syncCount = syncEngine.syncPendingOutboxEvents()
-            call.respondText("""{"status":"UP","system":"QUREVO OPD Server v2.0.0","mode":"HYBRID_OFFLINE_ONLINE","synced_events":$syncCount}""")
+            call.respondText("""{"status":"UP","system":"QUREVO OPD Server v2.1.0","mode":"HYBRID_OFFLINE_ONLINE","synced_events":$syncCount}""")
         }
 
         webSocket("/ws") {
@@ -76,5 +78,6 @@ fun Application.module() {
         tokenRoutes(repository)
         saasAdminRoutes()
         smsRoutes()
+        backupRoutes(backupEngine)
     }
 }
