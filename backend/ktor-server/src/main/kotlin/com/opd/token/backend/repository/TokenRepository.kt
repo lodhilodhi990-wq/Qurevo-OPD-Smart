@@ -12,6 +12,7 @@ class TokenRepository(private val outboxRepository: OutboxRepository = OutboxRep
     private val patientsList = mutableListOf<Patient>()
     private val doctorsList = mutableListOf<Doctor>()
     private val departmentsList = mutableListOf<Department>()
+    private val priorityLogs = mutableListOf<PriorityAuditLog>()
     private val tokenCounter = AtomicInteger(24)
 
     init {
@@ -45,7 +46,7 @@ class TokenRepository(private val outboxRepository: OutboxRepository = OutboxRep
     }
 
     @Synchronized
-    fun generateToken(patientId: String, doctorId: String, departmentId: String, priority: TokenPriority): Token {
+    fun generateToken(patientId: String, doctorId: String, departmentId: String, priority: TokenPriority = TokenPriority.NORMAL): Token {
         val nextNum = tokenCounter.incrementAndGet()
         val numStr = String.format("%03d", nextNum)
         val token = Token(
@@ -75,7 +76,11 @@ class TokenRepository(private val outboxRepository: OutboxRepository = OutboxRep
 
     @Synchronized
     fun getNextWaitingToken(doctorId: String): Token? {
-        val token = tokenList.firstOrNull { it.doctorId == doctorId && it.status == TokenStatus.WAITING }
+        // Deterministic Priority Ordering: Highest rank first, then earliest creation timestamp
+        val token = tokenList
+            .filter { it.doctorId == doctorId && it.status == TokenStatus.WAITING }
+            .maxWithOrNull(compareBy<Token> { it.priority.rank }.thenByDescending { it.createdAt })
+
         if (token != null) {
             val updated = token.copy(
                 status = TokenStatus.CALLED,
@@ -87,6 +92,31 @@ class TokenRepository(private val outboxRepository: OutboxRepository = OutboxRep
             // Write status update to Outbox
             outboxRepository.addEvent("hosp-1", "TOKEN", updated.id, "UPDATE_CALLED", updated)
 
+            return updated
+        }
+        return null
+    }
+
+    @Synchronized
+    fun elevateTokenPriority(tokenId: String, newPriority: TokenPriority, reason: String, changedBy: String): Token? {
+        val index = tokenList.indexOfFirst { it.id == tokenId }
+        if (index != -1) {
+            val current = tokenList[index]
+            val updated = current.copy(priority = newPriority)
+            tokenList[index] = updated
+
+            val log = PriorityAuditLog(
+                id = UUID.randomUUID().toString(),
+                tokenId = tokenId,
+                oldPriority = current.priority,
+                newPriority = newPriority,
+                reason = reason,
+                changedBy = changedBy,
+                timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+            )
+            priorityLogs.add(log)
+
+            outboxRepository.addEvent("hosp-1", "TOKEN_PRIORITY", tokenId, "ELEVATE_PRIORITY", updated)
             return updated
         }
         return null

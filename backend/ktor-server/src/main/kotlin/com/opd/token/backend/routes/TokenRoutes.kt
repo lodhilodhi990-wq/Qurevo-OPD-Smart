@@ -22,10 +22,24 @@ fun Route.tokenRoutes(repository: TokenRepository) {
             val patientId = params["patientId"] ?: "p-1"
             val doctorId = params["doctorId"] ?: "doc-1"
             val departmentId = params["departmentId"] ?: "dep-1"
-            val token = repository.generateToken(patientId, doctorId, departmentId, TokenPriority.NORMAL)
+            val priorityStr = params["priority"] ?: "NORMAL"
+            val priority = try { TokenPriority.valueOf(priorityStr) } catch (e: Exception) { TokenPriority.NORMAL }
+
+            val token = repository.generateToken(patientId, doctorId, departmentId, priority)
 
             QueueWebSocket.broadcast(Json.encodeToString(WebSocketMessage("TOKEN_CREATED", token.tokenNumber)))
             call.respond(HttpStatusCode.Created, token)
+        }
+        post("/{id}/priority") {
+            val id = call.parameters["id"] ?: return@post call.respond(HttpStatusCode.BadRequest)
+            val req = call.receive<PriorityElevationRequest>()
+            val updated = repository.elevateTokenPriority(id, req.newPriority, req.reason, req.requestedBy)
+            if (updated != null) {
+                QueueWebSocket.broadcast(Json.encodeToString(WebSocketMessage("TOKEN_PRIORITY_ELEVATED", updated.tokenNumber)))
+                call.respond(updated)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
         }
         post("/next") {
             val doctorId = call.request.queryParameters["doctorId"] ?: "doc-1"
