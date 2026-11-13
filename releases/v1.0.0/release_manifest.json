@@ -1,0 +1,17 @@
+{
+  "projectName": "QUREVO OPD Smart Token Platform",
+  "version": "1.0.0",
+  "buildDate": "March 2026",
+  "architecture": "Offline-First Hybrid Cloud",
+  "costPolicy": "100% Free / Open-Source",
+  "artifacts": {
+    "backend": "backend/ktor-server/build/libs/ktor-server-all.jar",
+    "serverManager": "tools/server-manager/build/libs/server-manager.jar",
+    "webApps": "web-apps/",
+    "receptionApp": "apps/reception-app/build/outputs/apk/debug/reception-app-debug.apk",
+    "doctorApp": "apps/doctor-app/build/outputs/apk/debug/doctor-app-debug.apk",
+    "tvDisplayApp": "apps/tv-display-app/build/outputs/apk/debug/tv-display-app-debug.apk",
+    "adminApp": "apps/admin-app/build/outputs/apk/debug/admin-app-debug.apk",
+    "unifiedApp": "apps/unified-app/build/outputs/apk/debug/unified-app-debug.apk"
+  }
+}
