@@ -14,12 +14,31 @@ enum class TokenStatus {
 }
 
 @Serializable
-enum class TokenPriority {
-    NORMAL,
-    PRIORITY,
-    EMERGENCY,
-    FOLLOW_UP
+enum class TokenPriority(val rank: Int) {
+    NORMAL(0),
+    PRIORITY(1),
+    URGENT(2),
+    EMERGENCY(3)
 }
+
+@Serializable
+data class PriorityElevationRequest(
+    val tokenId: String,
+    val newPriority: TokenPriority,
+    val reason: String,
+    val requestedBy: String
+)
+
+@Serializable
+data class PriorityAuditLog(
+    val id: String,
+    val tokenId: String,
+    val oldPriority: TokenPriority,
+    val newPriority: TokenPriority,
+    val reason: String,
+    val changedBy: String,
+    val timestamp: String
+)
 
 @Serializable
 enum class UserRole {

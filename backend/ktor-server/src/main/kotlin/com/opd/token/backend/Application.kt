@@ -53,11 +53,11 @@ fun Application.module() {
 
     routing {
         get("/") {
-            call.respondText("OPD Smart Token & Hospital Platform Server is running")
+            call.respondText("QUREVO Smart OPD Platform v2.0.0 is running")
         }
         get("${ApiEndpoints.BASE_PATH}/health") {
             val syncCount = syncEngine.syncPendingOutboxEvents()
-            call.respondText("""{"status":"UP","system":"OPD Smart Token Server","mode":"HYBRID_OFFLINE_ONLINE","synced_events":$syncCount}""")
+            call.respondText("""{"status":"UP","system":"QUREVO OPD Server v2.0.0","mode":"HYBRID_OFFLINE_ONLINE","synced_events":$syncCount}""")
         }
 
         webSocket("/ws") {
@@ -75,5 +75,6 @@ fun Application.module() {
         patientRoutes(repository)
         tokenRoutes(repository)
         saasAdminRoutes()
+        smsRoutes()
     }
 }
